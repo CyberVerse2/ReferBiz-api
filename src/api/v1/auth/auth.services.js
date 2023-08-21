@@ -32,6 +32,7 @@ async function createNewUser(ownerName, ownerEmail) {
   pool.on("error", (error) => {
     throw new DatabaseError(error);
   });
+  console.log(process.env.COOKIE_SECRET_KEY);
   const token = jwt.sign(
     { userId: newUser.owner_id },
     process.env.COOKIE_SECRET_KEY,
