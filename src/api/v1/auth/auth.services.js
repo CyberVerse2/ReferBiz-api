@@ -16,7 +16,8 @@ async function findUser(email) {
 
 async function createNewUser(ownerName, ownerEmail) {
   const user = await findUser(ownerEmail);
-  if (user) {
+  console.log(user);
+  if (user.length !== 0) {
     throw new AuthenticationError("User already exists");
   }
   const ownerId = await createId();
@@ -27,7 +28,7 @@ async function createNewUser(ownerName, ownerEmail) {
   pool.on("error", (error) => {
     throw new DatabaseError(error);
   });
-  console.log(newUser)
+  console.log(newUser);
   return newUser;
 }
 
