@@ -1,12 +1,12 @@
 const jwt = require("jsonwebtoken");
 
-
 require("dotenv").config();
 const { pool, query } = require("../configs/db.config");
 const {
   NotFoundError,
   AuthenticationError,
   DatabaseError,
+  checkDatabaseError,
 } = require("../utils/errors.util");
 const createId = require("../utils/uuid.util");
 
@@ -29,16 +29,15 @@ async function createNewUser(ownerName, ownerEmail) {
     [ownerId, ownerName, ownerEmail]
   );
 
-  pool.on("error", (error) => {
-    throw new DatabaseError(error);
-  });
+  checkDatabaseError();
+
   console.log(process.env.COOKIE_SECRET_KEY);
   const token = jwt.sign(
     { userId: newUser.owner_id },
     process.env.COOKIE_SECRET_KEY,
     { expiresIn: "24h" }
   );
-  
+
   console.log(newUser);
   return token;
 }

@@ -1,3 +1,4 @@
+const {pool} =require('../configs/db.config')
 class AppError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -19,14 +20,23 @@ class NotFoundError extends AppError {
     super(message, 404); // Not Found status code
   }
 }
-class DatabaseError extends AppError{
+class DatabaseError extends AppError {
   constructor(message) {
-    super(message, 500)
+    super(message, 500);
   }
 }
+
+//checks for errors when querying database
+function checkDatabaseError() {
+  pool.on("error", (error) => {
+    throw new DatabaseError(error);
+  });
+}
+
 module.exports = {
   AppError,
   AuthenticationError,
   NotFoundError,
-  DatabaseError
-}
+  DatabaseError,
+  checkDatabaseError
+};
