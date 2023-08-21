@@ -37,7 +37,7 @@ async function createNewUser(ownerName, ownerEmail) {
     process.env.COOKIE_SECRET_KEY,
     { expiresIn: "24h" }
   );
-
+  
   console.log(newUser);
   return token;
 }

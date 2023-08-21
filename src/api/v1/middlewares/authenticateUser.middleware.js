@@ -1,15 +1,16 @@
 // Authentication middleware
-require('dotenv').config()
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 function authenticateUser(req, res, next) {
-  const token = req.cookies.token;
+  const token = req.headers['cookie'].split('=')[1]
 
   if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   jwt.verify(token, process.env.COOKIE_SECRET_KEY, (err, decoded) => {
     if (err) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
     req.userId = decoded.userId;
@@ -17,4 +18,4 @@ function authenticateUser(req, res, next) {
   });
 }
 
-
+module.exports = authenticateUser;
