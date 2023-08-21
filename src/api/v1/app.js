@@ -2,7 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 
-const { errorHandler } = require("./middlewares/errorHandler.middleware");
+const { errorHandler } = require("./globals/middlewares/errorHandler.middleware");
 
 const api = require("./api");
 

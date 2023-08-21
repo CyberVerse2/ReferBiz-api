@@ -1,14 +1,14 @@
 const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
-const { pool, query } = require("../configs/db.config");
+const { query } = require("../globals/configs/db.config");
 const {
   NotFoundError,
   AuthenticationError,
   DatabaseError,
   checkDatabaseError,
-} = require("../utils/errors.util");
-const createId = require("../utils/uuid.util");
+} = require("../globals/utils/errors.util");
+const createId = require("../globals/utils/uuid.util");
 
 async function findUser(email) {
   const existingUser = await query(
