@@ -1,10 +1,11 @@
 // Authentication middleware
 const jwt = require("jsonwebtoken");
+
 require("dotenv").config();
-function authenticateUser(jwt, req, res, next) {
-  const resCookies = req.cookies
-  console.log(res.cookies)
-  const token = req.headers["cookie"]?.split("=")[1] || req.body.token;
+
+function authenticateUser( req, res, next) {
+  const token = req.body.token;
+  console.log(token)
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -13,7 +14,7 @@ function authenticateUser(jwt, req, res, next) {
     if (err) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-
+    console.log(`${decoded}shege`)
     req.userId = decoded.userId;
     next();
   });

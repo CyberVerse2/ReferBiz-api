@@ -5,6 +5,7 @@ const { NotFoundError } = require("../globals/utils/errors.util");
 
 const httpGetUser = asyncHandler(async (req, res) => {
   const { userId } = req;
+  console.log(userId)
   if (!userId) {
     throw new NotFoundError("Your token has expired. Please login again");
   }
