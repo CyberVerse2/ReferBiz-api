@@ -9,6 +9,13 @@ class AppError extends Error {
   }
 }
 
+
+class FormError extends AppError {
+  constructor(message) {
+    super(message, 400);
+  }
+}
+
 class AuthenticationError extends AppError {
   constructor(message) {
     super(message, 401); // Unauthorized status code
@@ -38,5 +45,6 @@ module.exports = {
   AuthenticationError,
   NotFoundError,
   DatabaseError,
-  checkDatabaseError
+  checkDatabaseError,
+  FormError
 };

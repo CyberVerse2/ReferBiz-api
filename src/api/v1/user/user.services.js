@@ -3,7 +3,7 @@ const {
   checkDatabaseError,
   AppError,
 } = require("../globals/utils/errors.util");
-const { hashData } = require("../globals/utils/hashData.utils");
+const { encryptData } = require("../globals/utils/encryptData.utils");
 
 async function getUser(id) {
   if (!id) {
@@ -23,7 +23,7 @@ async function updateUser(id, username, paystackSecretKey, whatsappLink) {
   }
   let newPaystackSecretKey =
     paystackSecretKey !== null
-      ? await hashData(paystackSecretKey)
+      ? await encryptData(paystackSecretKey)
       : paystackSecretKey.slice();
   console.log(newPaystackSecretKey);
   const updatedUser = await query(
