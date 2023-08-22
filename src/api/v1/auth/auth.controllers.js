@@ -25,7 +25,7 @@ const httpLoginUser = asyncHandler(async (req, res) => {
 
   res.cookie("token", token, { httpOnly: true, maxAge: 3600000 * 24 });
   // console.log(token);
-  return res.status(200).json({ message: "Login Successful" });
+  return res.status(200).json({ message: "Login Successful" , token});
 });
 
 module.exports = {

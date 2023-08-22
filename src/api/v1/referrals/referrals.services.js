@@ -1,7 +1,12 @@
 const referralCodes = require('referral-codes')
 
 const { query, pool } = require("../globals/configs/db.config");
-const { NotFoundError } = require("../globals/utils/errors.util");
+const {
+  AuthenticationError,
+  checkDatabaseError,
+  NotFoundError,
+  AppError,
+} = require("../globals/utils/errors.util");
 
 async function getReferrers(id) {
   const referrers = await pool.query("SELECT * FROM referrer");
