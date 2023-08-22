@@ -8,13 +8,14 @@ async function createPaymentLink(userId, name) {
   const paystackSecretKey = await decryptData(paystackSecretKeyHash);
   let data = JSON.stringify({
     name: name,
-    custom_fields: [
-      {
-        display_name: "Referral Code",
-
-        variable_name: "Referral Code",
-      },
-    ],
+    metadata: {
+      custom_fields: [
+        {
+          display_name: "Referral Code",
+          variable_name: "referral_code",
+        },
+      ],
+    },
   });
 
   let config = {
@@ -32,7 +33,7 @@ async function createPaymentLink(userId, name) {
   const response = await axios(config);
 
   const slug = await response.data.data.slug;
-  console.log(slug)
+  console.log(slug);
   let paymentLink = `https://paystack.com/pay/${slug}`;
   // paymentLink = paymentLink.replace(/"/g, "'");
 
