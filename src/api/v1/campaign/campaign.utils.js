@@ -8,14 +8,12 @@ async function createPaymentLink(userId, name) {
   const paystackSecretKey = await decryptData(paystackSecretKeyHash);
   let data = JSON.stringify({
     name: name,
-    metadata: {
-      custom_fields: [
-        {
-          display_name: "Referral Code",
-          variable_name: "referral_code",
-        },
-      ],
-    },
+    custom_fields: [
+      {
+        display_name: "Referral Code",
+        variable_name: "Referral code",
+      },
+    ],
   });
 
   let config = {
