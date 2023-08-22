@@ -15,6 +15,7 @@ async function findUser(email) {
     "SELECT * FROM campaign_owners WHERE owner_email=$1",
     [email]
   );
+  checkDatabaseError()
   return existingUser;
 }
 

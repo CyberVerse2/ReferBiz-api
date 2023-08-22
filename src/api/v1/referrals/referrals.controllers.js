@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const { createNewReferrer, getReferrers } = require("./referrals.services");
 
 const httpGetReferrers = asyncHandler(async (req, res) => {
-  const { em } = req.body;
+  const { userId } = req;
   if (!userId) {
     throw new NotFoundError("Your token has expired. Please login again");
   }

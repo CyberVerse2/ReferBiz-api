@@ -11,9 +11,9 @@ const httpCreateNewUser = asyncHandler(async (req, res) => {
   }
   const token = await createNewUser(name, email);
   // Set the token as a cookie
-  res.cookie("token", token, { httpOnly: true, maxAge: 3600000 }); // 1 hour
+  // res.cookie("token", token, { httpOnly: true, maxAge: 3600000 }); // 1 hour
   // console.log(newUser)
-  return res.status(200).json({ message: "Registration Successful" });
+  return res.status(200).json({ message: "Registration Successful" ,token});
 });
 
 const httpLoginUser = asyncHandler(async (req, res) => {
@@ -21,11 +21,11 @@ const httpLoginUser = asyncHandler(async (req, res) => {
   if (!name && !email) {
     throw new NotFoundError("name and email required");
   }
-  const token = await loginUser(name, email);
+  const existingUser = await loginUser(name, email);
 
-  res.cookie("token", token, { httpOnly: true, maxAge: 3600000 * 24 });
+  // res.cookie("token", token, { httpOnly: true, maxAge: 3600000 * 24 });
   // console.log(token);
-  return res.status(200).json({ message: "Login Successful" , token});
+  return res.status(200).json({ message: "Login Successful", existingUser});
 });
 
 module.exports = {

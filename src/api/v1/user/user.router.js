@@ -9,7 +9,7 @@ const authenticateUser = require("../globals/middlewares/authenticateUser.middle
 
 const userRouter = express.Router();
 
-userRouter.use(authenticateUser);
+// userRouter.use(authenticateUser);
 
 userRouter.get("/", httpGetUser);
 userRouter.put('/update', httpUpdateUser)

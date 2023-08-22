@@ -31,6 +31,7 @@ const httpUpdateUser = asyncHandler(async (req, res) => {
 
 const httpDeleteUser = asyncHandler(async (req, res) => {
   const { userId } = req;
+  const { token } = req.body;
   if (!userId) {
     throw new NotFoundError("Your token has expired. Please login again");
   }
