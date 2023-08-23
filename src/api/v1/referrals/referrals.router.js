@@ -15,11 +15,11 @@ const referralsRouter = express.Router();
 
 referralsRouter.use(authenticateUser);
 
-// referralsRouter.get("/", httpGetReferrals);
+// referralsRouter.post("/", httpGetReferrals);
 // referralsRouter.delete("/createReferral", httpCreateReferrals);
-referralsRouter.get("/referrers", httpGetReferrers);
+referralsRouter.post("/referrers", httpGetReferrers);
 referralsRouter.post("/createReferrer",  httpCreateNewReferrer); 
-referralsRouter.get("/referred", httpGetReferred);
+referralsRouter.post("/referred", httpGetReferred);
 referralsRouter.post("/createReferred", httpCreateNewReferred);
 
 
