@@ -24,10 +24,12 @@ async function getDashboard(userId) {
     await pool.query("SELECT * FROM referred ORDER BY date DESC")
   ).rows;
   const sortReferred = sortedReferred.map((referred) => {
+    const referrer=await pool.query("SELECT *FROM referrer WHERE referral_code=$1",[referred.referral_code])
     const nameAndDateAndReferrerCode = [
       referred.name,
       referred.date.toLocaleString(),
       referred.referrer_code,
+      referrer
     ];
     return nameAndDateAndReferrerCode;
   });
@@ -64,7 +66,7 @@ async function getDashboard(userId) {
     referralsCount,
     linksCount,
     amountPaid,
-    // indexReferred,
+    sortReferred,
     // indexReferrers,
     // referralActivity,
     // activity
