@@ -11,7 +11,7 @@ const campaignRouter = express.Router();
 
 campaignRouter.use(authenticateUser);
 
-campaignRouter.get("/", httpGetCampaign);
+campaignRouter.post("/", httpGetCampaign);
 campaignRouter.post("/new", httpCreateCampaign);
 campaignRouter.delete("/delete", httpDeleteCampaign);
 
