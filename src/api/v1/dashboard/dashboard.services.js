@@ -20,8 +20,6 @@ async function getDashboard(userId) {
   const amount = await getCampaigns(userId);
   const referrerAmount = amount.referrer_amount;
   const amountPaid = referrerAmount * referralsCount;
-  const getCampaigns=await getCampaigns(userId)
-  console.log(getCampaigns)
   const sortedReferred = await (
     await pool.query("SELECT * FROM referred ORDER BY date DESC")
   ).rows;
@@ -70,7 +68,7 @@ async function getDashboard(userId) {
     linksCount,
     amountPaid,
     sortReferred,
-    getCampaigns,
+    amount,
     // indexReferrers,
     // referralActivity,
     // activity
