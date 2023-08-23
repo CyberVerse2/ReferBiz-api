@@ -23,7 +23,7 @@ async function getDashboard(userId) {
   const sortedReferred = await (
     await pool.query("SELECT * FROM referred ORDER BY date DESC")
   ).rows;
-  const sortReferred = sortedReferred.map((referred) => {
+  const sortReferred = sortedReferred.map(async (referred) => {
     const referrer=await pool.query("SELECT *FROM referrer WHERE referral_code=$1",[referred.referral_code])
     const nameAndDateAndReferrerCode = [
       referred.name,
