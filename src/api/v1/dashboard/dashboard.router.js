@@ -9,6 +9,6 @@ const dashboardRouter = express.Router();
 
 dashboardRouter.use(authenticateUser);
 
-dashboardRouter.get("/", httpGetDashboard);
+dashboardRouter.post("/", httpGetDashboard);
 
 module.exports = dashboardRouter;
