@@ -32,14 +32,11 @@ async function createNewUser(ownerName, ownerEmail) {
 
   checkDatabaseError();
 
-  console.log(process.env.COOKIE_SECRET_KEY);
   const token = jwt.sign(
     { userId: newUser.owner_id },
     process.env.COOKIE_SECRET_KEY,
     { expiresIn: "24h" }
   );
-
-  console.log(newUser);
   return token;
 }
 

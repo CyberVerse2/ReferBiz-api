@@ -19,21 +19,36 @@ async function getCampaigns(id) {
   return campaigns;
 }
 
-async function createCampaign(userId, name, description, campaignLink) {
+async function createCampaign(
+  userId,
+  name,
+  description,
+  campaignLink,
+  paystackPaymentLink
+) {
   const currentUser = await getUser(userId);
   if (!currentUser) throw new NotFoundError("User details not found");
 
   const campaignId = await createId();
-  const paymentLink = await createPaymentLink(
-    userId,
-    `${currentUser.owner_name}`
-  );
+  // const paymentLink = await createPaymentLink(
+  //   userId,
+  //   `${currentUser.owner_name}`
+  // );
 
-  if (!paymentLink) throw new AppError("Payment link generation failed");
+  if (!paystackPaymentLink)
+    throw new AppError("Payment link generation failed");
 
   const newCampaign = await query(
     `INSERT INTO campaigns(campaign_id, owner_id, campaign_name, campaign_description, reward_details, paystack_payment_link, campaign_link) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-    [campaignId, userId, name, description, "cash", paymentLink, campaignLink]
+    [
+      campaignId,
+      userId,
+      name,
+      description,
+      "cash",
+      paystackPaymentLink,
+      campaignLink,
+    ]
   );
 
   checkDatabaseError();

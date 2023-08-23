@@ -5,22 +5,22 @@ const {
   // httpCreateReferrals,
   httpCreateNewReferrer,
   httpGetReferrers,
-  // httpCreateReferred,
-  // httpGetReferred
+  httpCreateNewReferred,
+  httpGetReferred
 } = require("./referrals.controllers");
 const authenticateUser = require("../globals/middlewares/authenticateUser.middleware");
 
 
 const referralsRouter = express.Router();
 
-
+referralsRouter.use(authenticateUser);
 
 // referralsRouter.get("/", httpGetReferrals);
 // referralsRouter.delete("/createReferral", httpCreateReferrals);
-referralsRouter.get("/",authenticateUser, httpGetReferrers);
+referralsRouter.get("/referrers", httpGetReferrers);
 referralsRouter.post("/createReferrer",  httpCreateNewReferrer); 
-// referralsRouter.get("/", httpGetReferred);
-// referralsRouter.post("/createReferred", httpCreateReferred);
+referralsRouter.get("/referred", httpGetReferred);
+referralsRouter.post("/createReferred", httpCreateNewReferred);
 
 
 

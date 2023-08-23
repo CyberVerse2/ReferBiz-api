@@ -20,7 +20,7 @@ const httpGetCampaign = asyncHandler(async (req, res) => {
 
 const httpCreateCampaign = asyncHandler(async (req, res) => {
   const { userId } = req;
-  const { name, description, campaignLink } = req.body;
+  const { name, description, campaignLink, paystackPaymentLink } = req.body;
   if (!(name, description, campaignLink)) {
     throw new FormError("Some details are missing in the form");
   }
@@ -28,7 +28,8 @@ const httpCreateCampaign = asyncHandler(async (req, res) => {
     userId,
     name,
     description,
-    campaignLink
+    campaignLink,
+    paystackPaymentLink
   );
   return res.status(200).json(newCampaign);
 });

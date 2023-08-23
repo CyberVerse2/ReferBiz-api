@@ -5,7 +5,7 @@ require("dotenv").config();
 
 function authenticateUser( req, res, next) {
   const token = req.body.token;
-  console.log(token)
+  // console.log(token)
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -14,7 +14,7 @@ function authenticateUser( req, res, next) {
     if (err) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    console.log(`${decoded}shege`)
+    // console.log(`${decoded}shege`)
     req.userId = decoded.userId;
     next();
   });
