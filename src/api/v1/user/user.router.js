@@ -11,7 +11,7 @@ const userRouter = express.Router();
 
 userRouter.use(authenticateUser);
 
-userRouter.get("/", httpGetUser);
+userRouter.post("/", httpGetUser);
 userRouter.put('/update', httpUpdateUser)
 userRouter.delete('/delete', httpDeleteUser)
 
