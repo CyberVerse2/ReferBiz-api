@@ -24,29 +24,38 @@ async function getDashboard(userId) {
     await pool.query("SELECT * FROM referred ORDER BY date DESC")
   ).rows;
   const sortReferred = sortedReferred.map(async (referred) => {
-    const referrer=await pool.query("SELECT *FROM referrer WHERE referral_code=$1 ORDER BY date DESC",[referred.referrer_code]).rows
-    console.log(referrer)
+    const referrer = await pool.query(
+      "SELECT *FROM referrer WHERE referral_code=$1 ORDER BY date DESC",
+      [referred.referrer_code]
+    ).rows;
+    console.log(referrer);
     const nameAndDateAndReferrerCode = [
       referred.name,
       referred.date.toLocaleString(),
       referred.referrer_code,
-      referrer
+      referrer,
     ];
     return nameAndDateAndReferrerCode;
   });
-  const sortedReferrers = await (
-    await pool.query("SELECT * FROM referrer ORDER BY date DESC")
-  ).rows;
-  const sortReferrers = sortedReferrers.map((referrers) => {
-    const nameandReferralCode = [referrers.name, referrers.referral_code];
-    return nameandReferralCode;
-  });
-  const indexReferred = sortReferred.map((referred, index) => {
-    return referred;
-  });
-  const indexReferrers = sortReferrers.map((referrers, index) => {
-    return referrers;
-  });
+    const [referralCode] = referralCodes.generate({
+      length: 5,
+      count: 1,
+      charset: referralCodes.charset("alphabetic"),
+    });
+    console.log(referralCode);
+  // const sortedReferrers = await (
+  //   await pool.query("SELECT * FROM referrer ORDER BY date DESC")
+  // ).rows;
+  // const sortReferrers = sortedReferrers.map((referrers) => {
+  //   const nameandReferralCode = [referrers.name, referrers.referral_code];
+  //   return nameandReferralCode;
+  // });
+  // const indexReferred = sortReferred.map((referred, index) => {
+  //   return referred;
+  // });
+  // const indexReferrers = sortReferrers.map((referrers, index) => {
+  //   return referrers;
+  // });
   // console.log(indexReferred);
   // console.log(indexReferrers);
   // const referralActivity = [sortReferred, sortReferrers];
@@ -64,11 +73,12 @@ async function getDashboard(userId) {
   // console.log(referralActivity)
 
   const data = {
-    referralsCount,
+    // referralsCount,
     linksCount,
     amountPaid,
     sortReferred,
     amount,
+    referralCode
     // indexReferrers,
     // referralActivity,
     // activity

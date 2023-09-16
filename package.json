@@ -16,6 +16,8 @@
     "pm2": "^5.3.0"
   },
   "dependencies": {
+    "@hokify/agenda": "^6.3.0",
+    "agenda": "^5.0.0",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",

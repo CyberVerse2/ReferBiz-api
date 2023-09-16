@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 function authenticateUser( req, res, next) {
-  const token = req.body.token;
+  const token = req.token.token;
   // console.log(token)
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });

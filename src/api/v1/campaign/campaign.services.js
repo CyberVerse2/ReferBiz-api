@@ -36,7 +36,7 @@ async function createCampaign(
   // );
 
   if (!paystackPaymentLink)
-    throw new AppError("Payment link generation failed");
+    throw new AppError("Provide a paystack payment link");
 
   const newCampaign = await query(
     `INSERT INTO campaigns(campaign_id, owner_id, campaign_name, campaign_description, reward_details, paystack_payment_link, campaign_link) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,

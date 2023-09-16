@@ -1,17 +1,21 @@
-const asyncHandler = require("express-async-handler");
+const asyncHandler = require('express-async-handler');
 
-const { getCampaigns, createCampaign, deleteCampaign } = require("./campaign.services");
+const {
+  getCampaigns,
+  createCampaign,
+  deleteCampaign
+} = require('./campaign.services');
 const {
   NotFoundError,
   AuthenticationError,
   AppError,
-  FormError,
-} = require("../globals/utils/errors.util");
+  FormError
+} = require('../globals/utils/errors.util');
 
 const httpGetCampaign = asyncHandler(async (req, res) => {
   const { userId } = req;
   if (!userId) {
-    throw new AuthenticationError("Your token has expired. Please login again");
+    throw new AuthenticationError('Your token has expired. Please login again');
   }
   const currentCampaign = await getCampaigns(userId);
   console.log(currentCampaign);
@@ -22,7 +26,7 @@ const httpCreateCampaign = asyncHandler(async (req, res) => {
   const { userId } = req;
   const { name, description, campaignLink, paystackPaymentLink } = req.body;
   if (!(name, description, campaignLink)) {
-    throw new FormError("Some details are missing in the form");
+    throw new FormError('Some details are missing in the form');
   }
   const newCampaign = await createCampaign(
     userId,
@@ -37,17 +41,23 @@ const httpCreateCampaign = asyncHandler(async (req, res) => {
 const httpDeleteCampaign = asyncHandler(async (req, res) => {
   const { userId } = req;
   if (!userId) {
-    throw new NotFoundError("Your token has expired. Please login again");
+    throw new NotFoundError('Your token has expired. Please login again');
   }
   const deletedCampaign = await deleteCampaign(userId);
-  console.log(deletedCampaign)
-  return res.status(200).json({ message: "Campaign Deleted Successfully", deletedCampaign });
+  console.log(deletedCampaign);
+  return res
+    .status(200)
+    .json({
+      success: true,
+      message: 'Campaign Deleted Successfully',
+      deletedCampaign
+    });
 });
 
 module.exports = {
   httpGetCampaign,
   httpCreateCampaign,
-  httpDeleteCampaign,
+  httpDeleteCampaign
 };
 
 // CREATE TABLE campaigns (
