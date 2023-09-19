@@ -33,8 +33,6 @@ async function createPaymentLink(userId, name) {
   const slug = await response.data.data.slug;
   console.log(slug);
   let paymentLink = `https://paystack.com/pay/${slug}`;
-  // paymentLink = paymentLink.replace(/"/g, "'");
-
   return paymentLink;
 }
 

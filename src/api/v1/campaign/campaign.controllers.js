@@ -45,13 +45,11 @@ const httpDeleteCampaign = asyncHandler(async (req, res) => {
   }
   const deletedCampaign = await deleteCampaign(userId);
   console.log(deletedCampaign);
-  return res
-    .status(200)
-    .json({
-      success: true,
-      message: 'Campaign Deleted Successfully',
-      deletedCampaign
-    });
+  return res.status(200).json({
+    success: true,
+    message: 'Campaign Deleted Successfully',
+    deletedCampaign
+  });
 });
 
 module.exports = {

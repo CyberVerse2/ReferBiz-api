@@ -11,6 +11,7 @@ const { createPaymentLink } = require("./campaign.utils");
 const { getUser } = require("../user/user.services");
 
 async function getCampaigns(id) {
+
   const campaigns = await query("SELECT * FROM campaigns WHERE owner_id=$1", [
     id,
   ]);
