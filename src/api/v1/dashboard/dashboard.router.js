@@ -1,14 +1,12 @@
-const express = require("express");
+import { Router } from "express";
 
-const {
-  httpGetDashboard
-} = require('./dashboard.controllers')
-const authenticateUser = require("../globals/middlewares/authenticateUser.middleware");
+import { httpGetDashboard } from './dashboard.controllers.js';
+import authenticateUser from "../globals/middlewares/authenticateUser.middleware.js";
 
-const dashboardRouter = express.Router();
+const dashboardRouter = Router();
 
 dashboardRouter.use(authenticateUser);
 
 dashboardRouter.post("/", httpGetDashboard);
 
-module.exports = dashboardRouter;
+export default dashboardRouter;

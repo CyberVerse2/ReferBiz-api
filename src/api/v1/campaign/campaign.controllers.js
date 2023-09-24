@@ -1,16 +1,16 @@
-const asyncHandler = require('express-async-handler');
+import asyncHandler from 'express-async-handler';
 
-const {
+import {
   getCampaigns,
   createCampaign,
   deleteCampaign
-} = require('./campaign.services');
-const {
+} from './campaign.services.js';
+import {
   NotFoundError,
   AuthenticationError,
   AppError,
   FormError
-} = require('../globals/utils/errors.util');
+} from '../globals/utils/errors.util.js';
 
 const httpGetCampaign = asyncHandler(async (req, res) => {
   const { userId } = req;
@@ -19,13 +19,23 @@ const httpGetCampaign = asyncHandler(async (req, res) => {
   }
   const currentCampaign = await getCampaigns(userId);
   console.log(currentCampaign);
-  return res.status(200).json(currentCampaign);
+  return res.status(200).json({ success: true, data: currentCampaign });
+});
+
+const httpGetCampaignById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!userId) {
+    throw new AuthenticationError('Your token has expired. Please login again');
+  }
+  const campaignById = await getCampaignById(id);
+  console.log(campaignById);
+  return res.status(200).json({ success: true, data: campaignById });
 });
 
 const httpCreateCampaign = asyncHandler(async (req, res) => {
   const { userId } = req;
-  const { name, description, campaignLink, paystackPaymentLink } = req.body;
-  if (!(name, description, campaignLink)) {
+  const { name, description, campaignLink, paymentLink } = req.body;
+  if (!(name, description, campaignLink, paymentLink)) {
     throw new FormError('Some details are missing in the form');
   }
   const newCampaign = await createCampaign(
@@ -33,17 +43,17 @@ const httpCreateCampaign = asyncHandler(async (req, res) => {
     name,
     description,
     campaignLink,
-    paystackPaymentLink
+    paymentLink
   );
   return res.status(200).json(newCampaign);
 });
 
 const httpDeleteCampaign = asyncHandler(async (req, res) => {
-  const { userId } = req;
-  if (!userId) {
+  const { id } = req.params;
+  if (!id) {
     throw new NotFoundError('Your token has expired. Please login again');
   }
-  const deletedCampaign = await deleteCampaign(userId);
+  const deletedCampaign = await deleteCampaign(id);
   console.log(deletedCampaign);
   return res.status(200).json({
     success: true,
@@ -52,8 +62,9 @@ const httpDeleteCampaign = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = {
+export {
   httpGetCampaign,
+  httpGetCampaignById,
   httpCreateCampaign,
   httpDeleteCampaign
 };

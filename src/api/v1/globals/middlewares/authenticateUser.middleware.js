@@ -1,8 +1,9 @@
 // Authentication middleware
-const jwt = require('jsonwebtoken');
-const { getUser } = require('../../user/user.services');
-const { AuthenticationError } = require('../utils/errors.util');
-require('dotenv').config();
+import jwt from 'jsonwebtoken';
+import { getUser } from '../../user/user.services.js';
+import { AuthenticationError } from '../utils/errors.util.js';
+import { config } from 'dotenv';
+config();
 
 async function authenticateUser(req, res, next) {
   const token = req.headers['authorization']?.split(' ')[1];
@@ -27,4 +28,4 @@ async function authenticateUser(req, res, next) {
   next();
 }
 
-module.exports = authenticateUser;
+export default authenticateUser;

@@ -1,22 +1,20 @@
-const express = require("express");
-const morgan = require("morgan");
-const cors = require("cors");
-const helmet = require("helmet");
+import express, { json } from 'express';
+import morgan from 'morgan';
+import cors from 'cors';
+import helmet from 'helmet';
 
-const {
-  errorHandler,
-} = require("./globals/middlewares/errorHandler.middleware");
+import { errorHandler } from './globals/middlewares/errorHandler.middleware.js';
 
-const api = require("./api");
+
+import api from './api.js';
 
 const app = express();
 
 app.use(helmet());
 app.use(cors());
-app.use(morgan("dev"));
-app.use(express.json());
-
-app.use("/api/v1", api);
+app.use(morgan('dev'));
+app.use(json());
+app.use('/api/v1', api);
 app.use(errorHandler);
 
-module.exports = app;
+export default app;

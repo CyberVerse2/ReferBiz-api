@@ -1,27 +1,22 @@
-const express = require("express");
+import { Router } from 'express';
 
-const {
-  // httpGetReferrals,
-  // httpCreateReferrals,
+import {
   httpCreateNewReferrer,
   httpGetReferrers,
   httpCreateNewReferred,
   httpGetReferred
-} = require("./referrals.controllers");
-const authenticateUser = require("../globals/middlewares/authenticateUser.middleware");
+} from './referrals.controllers.js';
+import authenticateUser from '../globals/middlewares/authenticateUser.middleware.js';
 
-
-const referralsRouter = express.Router();
+const referralsRouter = Router();
 
 referralsRouter.use(authenticateUser);
 
 // referralsRouter.post("/", httpGetReferrals);
 // referralsRouter.delete("/createReferral", httpCreateReferrals);
-referralsRouter.post("/referrers", httpGetReferrers);
-referralsRouter.post("/createReferrer",  httpCreateNewReferrer); 
-referralsRouter.post("/referred", httpGetReferred);
-referralsRouter.post("/createReferred", httpCreateNewReferred);
+referralsRouter.post('/referrers', httpGetReferrers);
+referralsRouter.post('/createReferrer', httpCreateNewReferrer);
+referralsRouter.post('/referred', httpGetReferred);
+referralsRouter.post('/createReferred', httpCreateNewReferred);
 
-
-
-module.exports = referralsRouter;
+export default referralsRouter;

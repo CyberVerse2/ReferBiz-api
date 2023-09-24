@@ -1,10 +1,10 @@
 CREATE TABLE campaign_owners (
     owner_id VARCHAR(255) PRIMARY KEY,
     owner_name TEXT NOT NULL,
-    owner_email TEXT UNIQUE NOT NULL,
+    organization_email TEXT UNIQUE NOT NULL,
     password_hash TEXT,
-    whatsapp_link TEXT,
-    paystack_secret_key VARCHAR(255)
+    social_link TEXT,
+    bloc_secret_key VARCHAR(255)
 );
 
 CREATE TABLE campaigns (

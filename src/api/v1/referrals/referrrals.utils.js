@@ -1,22 +1,22 @@
-const axios = require("axios");
+import axios from 'axios';
 
-const { decryptData } = require("../globals/utils/encryptData.utils");
-const { getUser } = require("../user/user.services");
+// import { decryptData } from '../globals/utils/encryptData.utils.js';
+import { getUser } from '../user/user.services.js';
 
 async function getReferrerCode(userId) {
   const currentUser = await getUser(userId);
-  const paystackSecretKeyHash = currentUser?.paystack_secret_key;
-  const paystackSecretKey = decryptData(paystackSecretKeyHash);
-  const data = "";
+  const blocSecretKeyHash = currentUser?.bloc_secret_key;
+  const blocSecretKey = decryptData(blocSecretKeyHash);
+  const data = '';
 
   let config = {
-    method: "get",
+    method: 'get',
     maxBodyLength: Infinity,
-    url: "https://api.paystack.co/transaction",
+    url: 'https://api.bloc.co/transaction',
     headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${paystackSecretKey}`,
-    },
+      Accept: 'application/json',
+      Authorization: `Bearer ${blocSecretKey}`
+    }
   };
 
   const response = await axios(config);
@@ -41,6 +41,6 @@ async function getReferrerCode(userId) {
 
   return referrerCode;
 }
-module.exports = {
-  getReferrerCode,
+export default {
+  getReferrerCode
 };

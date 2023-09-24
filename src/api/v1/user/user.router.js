@@ -1,18 +1,24 @@
-const express = require("express");
+import { Router } from 'express';
 
-const {
+import {
   httpGetUser,
   httpUpdateUser,
-  httpDeleteUser,
-} = require("./user.controllers");
-const authenticateUser = require("../globals/middlewares/authenticateUser.middleware");
+  httpDeleteUser
+} from './user.controllers.js';
+import authenticateUser from '../globals/middlewares/authenticateUser.middleware.js';
+import validateData from '../globals/middlewares/validation.middleware.js';
+import userSchema from './user.validation.js';
 
-const userRouter = express.Router();
+const userRouter = Router();
 
 userRouter.use(authenticateUser);
 
-userRouter.post("/", httpGetUser);
-userRouter.put('/update', httpUpdateUser)
-userRouter.delete('/delete', httpDeleteUser)
+userRouter.post('/', httpGetUser);
+userRouter.put(
+  '/update',
+  (req, res, next) => validateData(userSchema, req, res, next),
+  httpUpdateUser
+);
+userRouter.delete('/delete', httpDeleteUser);
 
-module.exports = userRouter;
+export default userRouter;

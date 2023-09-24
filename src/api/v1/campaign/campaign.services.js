@@ -1,21 +1,31 @@
-const axios = require("axios");
-const {
+import axios from 'axios';
+import {
   AuthenticationError,
   checkDatabaseError,
   NotFoundError,
-  AppError,
-} = require("../globals/utils/errors.util");
-const { query, pool } = require("../globals/configs/db.config");
-const createId = require("../globals/utils/uuid.util");
-const { createPaymentLink } = require("./campaign.utils");
-const { getUser } = require("../user/user.services");
+  AppError
+} from '../globals/utils/errors.util.js';
+import { query, pool } from '../globals/configs/db.config.js';
+import { createId, shortId } from '../globals/utils/uuid.util.js';
+import { createPaymentLink } from './campaign.utils.js';
+import { getUser } from '../user/user.services.js';
 
 async function getCampaigns(id) {
-
-  const campaigns = await query("SELECT * FROM campaigns WHERE owner_id=$1", [
-    id,
+  const campaigns = await query('SELECT * FROM campaigns WHERE owner_id=$1', [
+    id
   ]);
   checkDatabaseError();
+  if (!campaigns) return 'No campaigns have been created yet';
+  console.log(campaigns);
+  return campaigns;
+}
+
+async function getCampaignById(id) {
+  const campaigns = await query('SELECT * FROM campaigns WHERE campaign_id=$1', [
+    id
+  ]);
+  checkDatabaseError();
+  if (!campaigns) return 'This campaign does not exist';
   console.log(campaigns);
   return campaigns;
 }
@@ -25,31 +35,22 @@ async function createCampaign(
   name,
   description,
   campaignLink,
-  paystackPaymentLink
+  paymentLink
 ) {
   const currentUser = await getUser(userId);
-  if (!currentUser) throw new NotFoundError("User details not found");
+  if (!currentUser) throw new NotFoundError('User details not found');
 
-  const campaignId = await createId();
+  const campaignId = shortId();
   // const paymentLink = await createPaymentLink(
   //   userId,
   //   `${currentUser.owner_name}`
   // );
 
-  if (!paystackPaymentLink)
-    throw new AppError("Provide a paystack payment link");
+  if (!paymentLink) throw new AppError('Provide a payment link');
 
   const newCampaign = await query(
-    `INSERT INTO campaigns(campaign_id, owner_id, campaign_name, campaign_description, reward_details, paystack_payment_link, campaign_link) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-    [
-      campaignId,
-      userId,
-      name,
-      description,
-      "cash",
-      paystackPaymentLink,
-      campaignLink,
-    ]
+    `INSERT INTO campaigns(campaign_id, owner_id, campaign_name, campaign_description, reward_details, payment_link, campaign_link) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+    [campaignId, userId, name, description, 'cash', paymentLink, campaignLink]
   );
 
   checkDatabaseError();
@@ -60,19 +61,20 @@ async function createCampaign(
 
 async function deleteCampaign(id) {
   if (!id) {
-    throw new AppError("Provide an Id");
+    throw new AppError('Provide a campaign Id');
   }
   const deletedCampaign = await query(
-    "DELETE FROM campaigns WHERE owner_id=$1 RETURNING *",
+    'DELETE FROM campaigns WHERE campaign_id=$1 RETURNING *',
     [id]
   );
-  if (!deletedCampaign) throw new AppError("Campaign doesnt exist");
+  if (!deletedCampaign) throw new AppError('Campaign doesnt exist');
   checkDatabaseError();
   return deletedCampaign;
 }
 
-module.exports = {
+export {
   getCampaigns,
+  getCampaignById,
   createCampaign,
-  deleteCampaign,
+  deleteCampaign
 };

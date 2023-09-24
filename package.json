@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/api/v1/server.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/api/v1/server.js",
@@ -26,8 +27,10 @@
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
     "helmet": "^7.0.0",
+    "joi": "^17.10.2",
     "jsonwebtoken": "^9.0.1",
     "luxon": "^3.4.1",
+    "nanoid": "^5.0.1",
     "pg": "^8.11.3",
     "referral-codes": "^2.0.3",
     "uuid": "^9.0.0"

@@ -1,7 +1,7 @@
-const asyncHandler = require('express-async-handler');
+import asyncHandler from 'express-async-handler';
 
-const { getUser, updateUser, deleteUser } = require('./user.services');
-const { NotFoundError } = require('../globals/utils/errors.util');
+import { getUser, updateUser, deleteUser } from './user.services.js';
+import { NotFoundError } from '../globals/utils/errors.util.js';
 
 const httpGetUser = asyncHandler(async (req, res) => {
   const { userId } = req;
@@ -16,7 +16,8 @@ const httpGetUser = asyncHandler(async (req, res) => {
 
 const httpUpdateUser = asyncHandler(async (req, res) => {
   const { userId } = req;
-  const { username, email, paystackSecretKey, whatsappLink } = req.body || null;
+  const { username, email, socialLink, accountNumber, businessName } =
+    req.body || null;
   console.log(email);
 
   if (!userId) {
@@ -26,8 +27,9 @@ const httpUpdateUser = asyncHandler(async (req, res) => {
     userId,
     username,
     email,
-    whatsappLink,
-    paystackSecretKey
+    socialLink,
+    accountNumber,
+    businessName
   );
   return res.status(200).json(updatedUser);
 });
@@ -42,8 +44,4 @@ const httpDeleteUser = asyncHandler(async (req, res) => {
   return res.status(200).json({ message: 'User Deleted Successfully' });
 });
 
-module.exports = {
-  httpGetUser,
-  httpUpdateUser,
-  httpDeleteUser
-};
+export { httpGetUser, httpUpdateUser, httpDeleteUser };

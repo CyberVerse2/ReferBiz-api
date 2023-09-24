@@ -1,9 +1,5 @@
-const { query } = require('../globals/configs/db.config');
-const {
-  checkDatabaseError,
-  AppError
-} = require('../globals/utils/errors.util');
-const { encryptData } = require('../globals/utils/encryptData.utils');
+import { query } from '../globals/configs/db.config.js';
+import { checkDatabaseError, AppError } from '../globals/utils/errors.util.js';
 
 async function getUser(id) {
   if (!id) {
@@ -21,8 +17,9 @@ async function updateUser(
   id,
   username,
   email,
-  whatsappLink,
-  paystackSecretKey
+  socialLink,
+  accountNumber,
+  businessName
 ) {
   if (!id) {
     throw new AppError('Provide an Id');
@@ -32,12 +29,14 @@ async function updateUser(
       UPDATE campaign_owners
       SET
         owner_name = COALESCE($1, owner_name),
-        owner_email = COALESCE($2, owner_email),
-        whatsapp_link = COALESCE($3, whatsapp_link),
-        paystack_secret_key = COALESCE($4, paystack_secret_key)
-      WHERE owner_id = $5 RETURNING *;
+        organization_email = COALESCE($2, organization_email),
+        social_link = COALESCE($3, social_link),
+        account_number = COALESCE($4, account_number),
+        business_name = COALESCE($5, business_name)
+
+      WHERE owner_id = $6 RETURNING *;
     `,
-    [username, email, whatsappLink, paystackSecretKey, id]
+    [username, email, socialLink, accountNumber, businessName, id]
   );
   checkDatabaseError();
   return updatedUser;
@@ -55,7 +54,7 @@ async function deleteUser(id) {
   return deletedUser;
 }
 
-module.exports = {
+export {
   getUser,
   updateUser,
   deleteUser
