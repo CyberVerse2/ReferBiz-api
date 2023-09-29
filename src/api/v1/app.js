@@ -10,7 +10,8 @@ import appendObj from './globals/middlewares/appendObj.middlewares.js';
 import api from './api.js';
 import asyncHandler from 'express-async-handler';
 import { AuthenticationError } from './globals/utils/errors.util.js';
-
+import { config } from 'dotenv';
+config()
 const app = express();
 
 app.use(helmet());
@@ -24,7 +25,7 @@ app.post(
   '/webhook/url',
   asyncHandler((req, res) => {
     const hash = crypto
-      .createHmac('sha512', secret)
+      .createHmac('sha512', process.env.PAYSTACK_SECRET_KEY)
       .update(JSON.stringify(req.body))
       .digest('hex');
     if (hash != req.headers['x-paystack-signature'])
