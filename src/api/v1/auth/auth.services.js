@@ -1,4 +1,4 @@
-import sign from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 import { config } from 'dotenv';
 config();
@@ -41,7 +41,8 @@ async function createNewUser(ownerName, ownerEmail) {
   return token;
 }
 
-async function loginUser(ownerName, ownerEmail) {
+async function loginUser(ownerEmail) {
+  console.log(ownerEmail)
   const authenticatedUser = await findUser(ownerEmail);
   console.log(authenticatedUser);
   if (loginUser.length === 0) {
@@ -49,7 +50,7 @@ async function loginUser(ownerName, ownerEmail) {
       'User does not exist. Please register an account'
     );
   }
-  const token = sign(
+  const token = jwt.sign(
     { userId: authenticatedUser.owner_id },
     process.env.COOKIE_SECRET_KEY,
     {

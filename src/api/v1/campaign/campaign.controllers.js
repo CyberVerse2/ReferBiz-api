@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler';
 
 import {
   getCampaigns,
+  getCampaignById,
   createCampaign,
   deleteCampaign
 } from './campaign.services.js';
@@ -19,24 +20,31 @@ const httpGetCampaign = asyncHandler(async (req, res) => {
   }
   const currentCampaign = await getCampaigns(userId);
   console.log(currentCampaign);
-  return res.status(200).json({ success: true, data: currentCampaign });
+  return res
+    .status(200)
+    .json({
+      message: 'Campaigns retrieved succesfully',
+      data: currentCampaign
+    });
 });
 
 const httpGetCampaignById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  if (!userId) {
-    throw new AuthenticationError('Your token has expired. Please login again');
+  if (!id) {
+    throw new FormError('Campaign Id required');
   }
   const campaignById = await getCampaignById(id);
   console.log(campaignById);
-  return res.status(200).json({ success: true, data: campaignById });
+  return res
+    .status(200)
+    .json({ message: 'Campaign retrieved succesfully', data: campaignById });
 });
 
 const httpCreateCampaign = asyncHandler(async (req, res) => {
   const { userId } = req;
   const { name, description, campaignLink, paymentLink } = req.body;
   if (!(name, description, campaignLink, paymentLink)) {
-    throw new FormError('Some details are missing in the form');
+    throw new FormError('Some details are missing in the Create Campaign form');
   }
   const newCampaign = await createCampaign(
     userId,
@@ -45,20 +53,21 @@ const httpCreateCampaign = asyncHandler(async (req, res) => {
     campaignLink,
     paymentLink
   );
-  return res.status(200).json(newCampaign);
+  return res
+    .status(200)
+    .json({ message: 'Campaign Created Succesfully', newCampaign });
 });
 
 const httpDeleteCampaign = asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (!id) {
-    throw new NotFoundError('Your token has expired. Please login again');
+    throw new FormError('Campaign Id required');
   }
   const deletedCampaign = await deleteCampaign(id);
   console.log(deletedCampaign);
   return res.status(200).json({
-    success: true,
     message: 'Campaign Deleted Successfully',
-    deletedCampaign
+    data: deletedCampaign
   });
 });
 

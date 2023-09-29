@@ -14,7 +14,6 @@ async function authenticateUser(req, res, next) {
 
   jwt.verify(token, process.env.COOKIE_SECRET_KEY, (err, decoded) => {
     if (err) {
-      console.log('did not work');
       return res.status(401).json({ message: 'Unauthorized' });
     }
     // console.log(`${decoded}shege`)

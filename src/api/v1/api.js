@@ -5,10 +5,10 @@ import campaignRouter from './campaign/campaign.router.js';
 import referralsRouter from './referrals/referrals.router.js';
 import dashboardRouter from './dashboard/dashboard.router.js';
 import appendObj from './globals/middlewares/appendObj.middlewares.js';
-
+import { errorHandler } from './globals/middlewares/errorHandler.middleware.js';
 const api = Router();
-api.use(appendObj);
 
+api.use(appendObj);
 api.use('/auth', authRouter);
 api.use('/user', userRouter);
 api.use('/campaign', campaignRouter);

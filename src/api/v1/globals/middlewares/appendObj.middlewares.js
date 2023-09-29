@@ -1,12 +1,13 @@
 function appendObj(req, res, next) {
-  console.log(res.statusCode);
-  if (res.statusCode == 200 || 201) {
+  if (res.statusCode === 200 || res.statusCode === 201) {
     const original = res.json;
     res.json = function (body) {
       body = {
-        success: true,
+        success: body.stack ? false : true,
         statusCode: res.statusCode,
-        data: body
+        message: body.message,
+        stack: body.stack,
+        data: body.data
       };
       original.call(this, body);
     };

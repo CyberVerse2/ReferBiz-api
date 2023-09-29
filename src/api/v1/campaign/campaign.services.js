@@ -3,7 +3,8 @@ import {
   AuthenticationError,
   checkDatabaseError,
   NotFoundError,
-  AppError
+  AppError,
+  FormError
 } from '../globals/utils/errors.util.js';
 import { query, pool } from '../globals/configs/db.config.js';
 import { createId, shortId } from '../globals/utils/uuid.util.js';
@@ -21,11 +22,12 @@ async function getCampaigns(id) {
 }
 
 async function getCampaignById(id) {
-  const campaigns = await query('SELECT * FROM campaigns WHERE campaign_id=$1', [
-    id
-  ]);
+  const campaigns = await query(
+    'SELECT * FROM campaigns WHERE campaign_id=$1',
+    [id]
+  );
   checkDatabaseError();
-  if (!campaigns) return 'This campaign does not exist';
+  if (!campaigns) throw new NotFoundError('This campaign does not exist');
   console.log(campaigns);
   return campaigns;
 }
@@ -61,20 +63,15 @@ async function createCampaign(
 
 async function deleteCampaign(id) {
   if (!id) {
-    throw new AppError('Provide a campaign Id');
+    throw new FormError('Provide a campaign Id');
   }
   const deletedCampaign = await query(
     'DELETE FROM campaigns WHERE campaign_id=$1 RETURNING *',
     [id]
   );
-  if (!deletedCampaign) throw new AppError('Campaign doesnt exist');
   checkDatabaseError();
+  if (!deletedCampaign) throw new NotFoundError('Campaign doesnt exist');
   return deletedCampaign;
 }
 
-export {
-  getCampaigns,
-  getCampaignById,
-  createCampaign,
-  deleteCampaign
-};
+export { getCampaigns, getCampaignById, createCampaign, deleteCampaign };

@@ -3,56 +3,97 @@ import asyncHandler from 'express-async-handler';
 import {
   createNewReferrer,
   getReferrers,
+  getReferrerByCode,
   getReferred,
+  getReferredById,
   createNewReferred
 } from './referrals.services.js';
+import { FormError } from '../globals/utils/errors.util.js';
 
 const httpGetReferrers = asyncHandler(async (req, res) => {
-  const { userId } = req;
-  if (!userId) {
-    throw new NotFoundError('Your token has expired. Please login again');
+  const { campaignId } = req.body;
+  if (!campaignId) {
+    throw new FormError('Provide a campaign Id');
   }
-  const referrers = await getReferrers(userId);
+  const referrers = await getReferrers(campaignId);
+  return res
+    .status(200)
+    .json({ message: 'Referrers retrieved successfully', data: referrers });
+});
 
-  return res.status(200).json(referrers);
+const httpGetReferrerByCode = asyncHandler(async (req, res) => {
+  const { code } = req.params;
+  console.log(code);
+  if (!code) {
+    throw new FormError('Provide a referral Code');
+  }
+  const referrersById = await getReferrerByCode(code);
+  return res.status(200).json({
+    message: 'Referrers based on referral code retrieved successfully',
+    data: referrersById
+  });
 });
 
 const httpCreateNewReferrer = asyncHandler(async (req, res) => {
-  const { name, email } = req.body;
-  if (!name && !email) {
-    throw new NotFoundError('name and email required');
+  const { campaignId, name, email } = req.body;
+
+  if (!(name && email && campaignId)) {
+    throw new FormError('name,email and campaignId required');
   }
-  const newReferrer = await createNewReferrer(name, email);
-  console.log(newReferrer);
-  return res.status(200).json({ message: 'Registration Successful' });
+  const newReferrer = await createNewReferrer(campaignId, name, email);
+  return res
+    .status(200)
+    .json({ message: 'Registration Successful', data: newReferrer });
 });
 
 const httpGetReferred = asyncHandler(async (req, res) => {
-  const { userId } = req;
-  if (!userId) {
-    throw new NotFoundError('Your token has expired. Please login again');
+  const { campaignId } = req.body;
+  if (!campaignId) {
+    throw new FormError('Campaign Id required');
   }
-  const referred = await getReferred(userId);
+  const referred = await getReferred(campaignId);
 
-  return res.status(200).json(referred);
+  return res.status(200).json({
+    message: 'Referred of campaignId retrieved succesfully',
+    data: referred
+  });
+});
+
+const httpGetReferredById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    throw new FormError('Referred Id required');
+  }
+  const referrerd = await getReferredById(id);
+
+  return res
+    .status(200)
+    .json({ message: 'Referred retrieved succesfully', data: referrerd });
 });
 
 const httpCreateNewReferred = asyncHandler(async (req, res) => {
-  const { userId } = req;
-  const { name, email } = req.body;
-  if (!name && !email) {
-    throw new NotFoundError('name, email, referrerCode required');
+  const { campaignId, referralCode, name, email, amount } = req.body;
+  if (!(name && email && campaignId && amount)) {
+    throw new FormError('name and email required');
   }
-  const newReferred = await createNewReferred(userId, name, email);
-  console.log(newReferred);
-  return res
-    .status(200)
-    .json({ message: 'Registration of referrer Successful', newReferred });
+  const newReferred = await createNewReferred(
+    campaignId,
+    name,
+    email,
+    amount,
+    referralCode
+  );
+  return res.status(200).json({
+    message: 'Registration of referred Successful',
+    data: newReferred
+  });
 });
 
 export {
   httpCreateNewReferrer,
   httpGetReferrers,
+  httpGetReferrerByCode,
   httpGetReferred,
+  httpGetReferredById,
   httpCreateNewReferred
 };

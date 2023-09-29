@@ -18,10 +18,10 @@ async function getDashboard(userId) {
   const referrerAmount = amount.referrer_amount;
   const amountPaid = referrerAmount * referralsCount;
   const sortedReferred = await (
-    await pool.query('SELECT * FROM referred ORDER BY date DESC')
+    await query('SELECT * FROM referred ORDER BY date DESC')
   ).rows;
   const sortReferred = sortedReferred.map(async (referred) => {
-    const referrer = await pool.query(
+    const referrer = await query(
       'SELECT *FROM referrer WHERE referral_code=$1 ORDER BY date DESC',
       [referred.referrer_code]
     ).rows;
@@ -41,7 +41,7 @@ async function getDashboard(userId) {
   });
   console.log(referralCode);
   // const sortedReferrers = await (
-  //   await pool.query("SELECT * FROM referrer ORDER BY date DESC")
+  //   await query("SELECT * FROM referrer ORDER BY date DESC")
   // ).rows;
   // const sortReferrers = sortedReferrers.map((referrers) => {
   //   const nameandReferralCode = [referrers.name, referrers.referral_code];

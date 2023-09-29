@@ -11,7 +11,9 @@ const httpGetUser = asyncHandler(async (req, res) => {
   }
   const currentUser = await getUser(userId);
 
-  return res.status(200).json(currentUser);
+  return res
+    .status(200)
+    .json({ message: 'User Retrieved Succesfully', data: currentUser });
 });
 
 const httpUpdateUser = asyncHandler(async (req, res) => {
@@ -31,7 +33,9 @@ const httpUpdateUser = asyncHandler(async (req, res) => {
     accountNumber,
     businessName
   );
-  return res.status(200).json(updatedUser);
+  return res
+    .status(200)
+    .json({ message: 'User updated succesfully', data: updatedUser });
 });
 
 const httpDeleteUser = asyncHandler(async (req, res) => {
@@ -40,7 +44,6 @@ const httpDeleteUser = asyncHandler(async (req, res) => {
     throw new NotFoundError('Your token has expired. Please login again');
   }
   const deletedUser = await deleteUser(userId);
-  req.userId = req.token = null;
   return res.status(200).json({ message: 'User Deleted Successfully' });
 });
 
