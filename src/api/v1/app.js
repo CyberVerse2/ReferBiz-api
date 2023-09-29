@@ -20,8 +20,8 @@ app.use(json());
 app.use('/api/v1', api);
 app.use(errorHandler);
 
-app.get(
-  'webhook/url',
+app.post(
+  '/webhook/url',
   asyncHandler((req, res) => {
     const hash = crypto
       .createHmac('sha512', secret)
