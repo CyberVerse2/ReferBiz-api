@@ -54,7 +54,7 @@ const httpGetReferred = asyncHandler(async (req, res) => {
   const referred = await getReferred(campaignId);
 
   return res.status(200).json({
-    message: 'Referred of campaignId retrieved succesfully',
+    message: 'Referred of campaignId retrieved successfully',
     data: referred
   });
 });
@@ -64,11 +64,11 @@ const httpGetReferredById = asyncHandler(async (req, res) => {
   if (!id) {
     throw new FormError('Referred Id required');
   }
-  const referrerd = await getReferredById(id);
+  const referred = await getReferredById(id);
 
   return res
     .status(200)
-    .json({ message: 'Referred retrieved succesfully', data: referrerd });
+    .json({ message: 'Referred retrieved successfully', data: referred });
 });
 
 const httpCreateNewReferred = asyncHandler(async (req, res) => {

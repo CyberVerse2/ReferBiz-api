@@ -11,7 +11,7 @@ import api from './api.js';
 import asyncHandler from 'express-async-handler';
 import { AuthenticationError } from './globals/utils/errors.util.js';
 import { config } from 'dotenv';
-config()
+config();
 const app = express();
 
 app.use(helmet());
@@ -22,18 +22,19 @@ app.use('/api/v1', api);
 app.use(errorHandler);
 
 app.post(
-  '/webhook/url',
+  '/webhooks',
   asyncHandler((req, res) => {
     const hash = crypto
       .createHmac('sha512', process.env.PAYSTACK_SECRET_KEY)
       .update(JSON.stringify(req.body))
       .digest('hex');
+    console.log(req.headers['x-paystack-signature']);
     if (hash != req.headers['x-paystack-signature'])
       throw new AuthenticationError('The paystack hash is invalid');
     const event = req.body;
     return res
       .status(200)
-      .json({ message: 'Webhook retrieval succesful', data: event });
+      .json({ message: 'Webhook retrieval successful', data: event });
   })
 );
 
