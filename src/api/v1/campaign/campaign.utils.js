@@ -1,43 +1,41 @@
-const axios = require("axios");
-const { getUser } = require("../user/user.services");
-const { decryptData } = require("../globals/utils/encryptData.utils");
+import axios from 'axios';
+import { getUser } from '../user/user.services.js';
+// import { decryptData } from '../globals/utils/encryptData.utils.js';
 
 async function createPaymentLink(userId, name) {
   const currentUser = await getUser(userId);
-  const paystackSecretKeyHash = currentUser?.paystack_secret_key;
-  const paystackSecretKey = await decryptData(paystackSecretKeyHash);
+  const blocSecretKeyHash = currentUser?.bloc_secret_key;
+  const blocSecretKey = await decryptData(blocSecretKeyHash);
   let data = JSON.stringify({
     name: name,
     custom_fields: [
       {
-        display_name: "Referral Code",
-        variable_name: "Referral code",
-      },
-    ],
+        display_name: 'Referral Code',
+        variable_name: 'Referral code'
+      }
+    ]
   });
 
   let config = {
-    method: "post",
+    method: 'post',
     maxBodyLength: Infinity,
-    url: "https://api.paystack.co/page",
+    url: 'https://api.bloc.co/page',
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${paystackSecretKey}`,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${blocSecretKey}`
     },
-    data: data,
+    data: data
   };
 
   const response = await axios(config);
 
   const slug = await response.data.data.slug;
   console.log(slug);
-  let paymentLink = `https://paystack.com/pay/${slug}`;
-  // paymentLink = paymentLink.replace(/"/g, "'");
-
+  let paymentLink = `https://bloc.com/pay/${slug}`;
   return paymentLink;
 }
 
-module.exports = {
-  createPaymentLink,
+export {
+  createPaymentLink
 };

@@ -1,18 +1,18 @@
-const express = require("express");
+import { Router } from 'express';
+import authRouter from './auth/auth.router.js';
+import userRouter from './user/user.router.js';
+import campaignRouter from './campaign/campaign.router.js';
+import referralsRouter from './referrals/referrals.router.js';
+import dashboardRouter from './dashboard/dashboard.router.js';
+import appendObj from './globals/middlewares/appendObj.middlewares.js';
+import { errorHandler } from './globals/middlewares/errorHandler.middleware.js';
+const api = Router();
 
-const authRouter = require("./auth/auth.router");
-const userRouter = require("./user/user.router");
-const campaignRouter = require("./campaign/campaign.router");
-const referralsRouter = require('./referrals/referrals.router')
-const dashboardRouter = require("./dashboard/dashboard.router");
+api.use(appendObj);
+api.use('/auth', authRouter);
+api.use('/user', userRouter);
+api.use('/campaign', campaignRouter);
+api.use('/referrals', referralsRouter);
+api.use('/dashboard', dashboardRouter);
 
-const api = express.Router();
-
-api.use("/auth", authRouter);
-api.use("/user", userRouter);
-api.use("/campaign", campaignRouter);
-api.use("/referrals", referralsRouter);
-api.use("/dashboard", dashboardRouter);
-
-
-module.exports = api;
+export default api;

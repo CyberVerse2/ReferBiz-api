@@ -1,91 +1,126 @@
-const referralCodes = require("referral-codes");
+import { generate, charset as _charset } from 'referral-codes';
 
-const { query, pool } = require("../globals/configs/db.config");
-const createId = require("../globals/utils/uuid.util");
-const { getUser } = require("../user/user.services");
-const {
+import { query, pool } from '../globals/configs/db.config.js';
+import { createId, shortId } from '../globals/utils/uuid.util.js';
+import { getUser } from '../user/user.services.js';
+import {
   AuthenticationError,
   checkDatabaseError,
   NotFoundError,
-  AppError,
-} = require("../globals/utils/errors.util");
-const { getReferrerCode } = require("./referrrals.utils");
+  AppError
+} from '../globals/utils/errors.util.js';
+import { getCheckoutLink } from './referrals.js';
 
-async function getReferrers() {
-  const referrers = (await pool.query("SELECT * FROM referrer")).rows;
+async function getReferrers(campaignId) {
+  const referrers = await query('SELECT * FROM referrer where campaign_id=$1', [
+    campaignId
+  ]);
   checkDatabaseError();
   console.log(referrers);
   return referrers;
 }
 
-async function createNewReferrer(username, email) {
-  // const referrers = await getReferrers();
-  // if (!referrers.length===0) {
-  //   throw new NotFoundError("referrer not found");
-  // }
-  const userId = await createId();
-  const [referralCode] = referralCodes.generate({
+async function getReferrerByCode(code) {
+  const referrer = await query(
+    'SELECT * FROM referrer where referral_code=$1',
+    [code]
+  );
+  checkDatabaseError();
+  console.log(referrer);
+  return referrer;
+}
+
+async function createNewReferrer(campaignId, username, email) {
+  const referrerId = createId();
+  const [referralCode] = generate({
     length: 5,
     count: 1,
-    charset: referralCodes.charset("alphabetic"),
+    charset: _charset('alphabetic')
   });
   console.log(referralCode);
   const newReferrer = await query(
-    "INSERT INTO referrer(user_id, name, email, referral_code) VALUES($1, $2, $3, $4) RETURNING *",
-    [userId, username, email, referralCode]
+    'INSERT INTO referrer(campaign_id, referrer_id, name, email, referral_code) VALUES($1, $2, $3, $4, $5) RETURNING *',
+    [campaignId, referrerId, username, email, referralCode]
   );
-
   checkDatabaseError();
   console.log(newReferrer);
   return newReferrer;
 }
 
-async function getReferred() {
-  const referred = (await pool.query("SELECT * FROM referred")).rows;
+async function getReferred(id) {
+  const referred = await query('SELECT * FROM referred where campaign_id=$1', [
+    id
+  ]);
+  checkDatabaseError();
+  console.log(referred);
+  return referred;
+}
+
+async function getReferredById(id) {
+  const referred = (
+    await query('SELECT * FROM referred where referred_id=$1', [id])
+  ).rows;
   checkDatabaseError();
   console.log(referred);
   return referred;
 }
 
 async function updateReferralCount(referralCode) {
-  const { referral_count:referralCount } = await query(
+  const { referral_count: referralCount } = await query(
     `SELECT referral_count FROM referrer WHERE referral_code = $1 `,
     [referralCode]
   );
+  checkDatabaseError();
   console.log(referralCount);
   const updateReferred = await query(
     `
       UPDATE referrer SET referral_count=$1,rewards_earned=$2 WHERE referral_code=$3 RETURNING *;
     `,
-    [referralCount + 1,referralCount + 1, referralCode]
+    [referralCount + 1, referralCount + 1, referralCode]
   );
   checkDatabaseError();
   return updateReferred;
 }
 
-async function createNewReferred(ownerId, username, email) {
-  const currentUser = await getUser(ownerId);
-  if (!currentUser) throw new NotFoundError("User details not found");
-  const referrerCode = await getReferrerCode(ownerId);
-  const referrers = await getReferrers();
-  if (!referrers.length === 0) {
-    throw new NotFoundError("referrer not found");
+async function createNewReferred(
+  campaignId,
+  username,
+  email,
+  amount,
+  referralCode
+) {
+  const referredId = createId();
+  const referrer = await getReferrerByCode(referralCode);
+  if (referrer.length === 0) {
+    throw new NotFoundError('referrer not found');
   }
-  // const userId = await createId();
+  const date = new Date();
   const newReferred = await query(
-    "INSERT INTO referred(name, email, referrer_code) VALUES($1, $2, $3) RETURNING *",
-    [username, email, referrerCode]
+    'INSERT INTO referred(referred_id, campaign_id, name, email,amount, date, referrer_code) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+    [referredId, campaignId, username, email, amount, date, referralCode]
   );
-  const newReferrer = await updateReferralCount(referrerCode);
-  console.log(newReferrer);
   checkDatabaseError();
-  // console.log(newReferrer);
+  const body = {
+    customer_email: email,
+    customer_name: username,
+    country: 'Nigeria',
+    amount: amount,
+    // referredId,
+    // referralCode
+  };
+  getCheckoutLink(body);
+  console.log(newReferred);
   return newReferred;
 }
-
-module.exports = {
+async function validateReferral(email) {
+  
+}
+export {
   getReferrers,
+  getReferrerByCode,
   getReferred,
+  getReferredById,
   createNewReferrer,
-  createNewReferred,
+  createNewReferred
 };
+  

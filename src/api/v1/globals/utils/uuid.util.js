@@ -1,8 +1,13 @@
-const { v4: uuidv4 } = require("uuid");
+import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 
-async function createId() {
-  const id = await uuidv4()
-  return id
+function createId() {
+  const id = uuidv4();
+  return id;
 }
 
-module.exports = createId
+function shortId() {
+  return nanoid();
+}
+
+export { createId, shortId };

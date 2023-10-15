@@ -1,10 +1,14 @@
-const express = require('express')
+import { Router } from 'express';
 
-const {httpCreateNewUser, httpLoginUser} = require('./auth.controllers')
+import { httpCreateNewUser, httpLoginUser } from './auth.controllers.js';
+import validateData from '../globals/middlewares/validation.middleware.js';
+import authSchema from './auth.validation.js';
 
-const authRouter = express.Router()
+const authRouter = Router();
 
-authRouter.post('/signup', httpCreateNewUser)
-authRouter.post("/login", httpLoginUser);
+authRouter.use((req, res, next) => validateData(authSchema, req, res, next));
 
-module.exports = authRouter
+authRouter.post('/signup', httpCreateNewUser);
+authRouter.post('/login', httpLoginUser);
+
+export default authRouter;

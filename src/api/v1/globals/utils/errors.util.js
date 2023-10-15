@@ -1,4 +1,4 @@
-const {pool} =require('../configs/db.config')
+import { pool } from '../configs/db.config.js';
 class AppError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -8,7 +8,6 @@ class AppError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 }
-
 
 class FormError extends AppError {
   constructor(message) {
@@ -35,12 +34,12 @@ class DatabaseError extends AppError {
 
 //checks for errors when querying database
 function checkDatabaseError() {
-  pool.on("error", (error) => {
+  pool.on('error', (error) => {
     throw new DatabaseError(error);
   });
 }
 
-module.exports = {
+export {
   AppError,
   AuthenticationError,
   NotFoundError,

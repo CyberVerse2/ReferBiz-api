@@ -7,8 +7,9 @@ const errorHandler = (err, req, res, next) => {
     message: err.message,
     stack: err.stack,
   });
+  next()
 };
 
-module.exports = {
+export {
   errorHandler,
 };

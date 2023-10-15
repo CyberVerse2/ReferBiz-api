@@ -1,11 +1,13 @@
+import { config } from 'dotenv';
+config();
 const PORT = process.env.PORT || 8000;
 
-const http = require("http");
-const app = require("./app");
-const server = http.createServer(app);
+import { createServer } from 'http';
+import app from './app.js';
+const server = createServer(app);
 
 async function runServer() {
-  await server.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`listening on port ${PORT}`);
   });
 }

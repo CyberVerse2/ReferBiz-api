@@ -1,18 +1,30 @@
-const express = require("express");
-const {
+import { Router } from 'express';
+import {
   httpGetCampaign,
+  httpGetCampaignById,
   httpCreateCampaign,
   httpDeleteCampaign
-} = require("./campaign.controllers");
-const authenticateUser = require("../globals/middlewares/authenticateUser.middleware");
+} from './campaign.controllers.js';
+import authenticateUser from '../globals/middlewares/authenticateUser.middleware.js';
+import validateData from '../globals/middlewares/validation.middleware.js';
+import campaignSchema from './campaign.validation.js';
 
-
-const campaignRouter = express.Router();
+const campaignRouter = Router();
 
 campaignRouter.use(authenticateUser);
 
-campaignRouter.post("/", httpGetCampaign);
-campaignRouter.post("/new", httpCreateCampaign);
-campaignRouter.delete("/delete", httpDeleteCampaign);
+campaignRouter.get('/', httpGetCampaign);
+campaignRouter.get('/:id', httpGetCampaignById);
+campaignRouter.post(
+  '/new',
+  (req, res, next) => validateData(campaignSchema, req, res, next),
+  httpCreateCampaign
+);
+// campaignRouter.post(
+//   '/update',
+//   () => validateData(campaignSchema),
+//   httpUpdateCampaign
+// );
+campaignRouter.delete('/delete/:id', httpDeleteCampaign);
 
-module.exports = campaignRouter;
+export default campaignRouter;

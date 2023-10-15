@@ -1,53 +1,81 @@
-const asyncHandler = require("express-async-handler");
+import asyncHandler from 'express-async-handler';
 
-const { getCampaigns, createCampaign, deleteCampaign } = require("./campaign.services");
-const {
+import {
+  getCampaigns,
+  getCampaignById,
+  createCampaign,
+  deleteCampaign
+} from './campaign.services.js';
+import {
   NotFoundError,
   AuthenticationError,
   AppError,
-  FormError,
-} = require("../globals/utils/errors.util");
+  FormError
+} from '../globals/utils/errors.util.js';
 
 const httpGetCampaign = asyncHandler(async (req, res) => {
   const { userId } = req;
   if (!userId) {
-    throw new AuthenticationError("Your token has expired. Please login again");
+    throw new AuthenticationError('Your token has expired. Please login again');
   }
   const currentCampaign = await getCampaigns(userId);
   console.log(currentCampaign);
-  return res.status(200).json(currentCampaign);
+  return res
+    .status(200)
+    .json({
+      message: 'Campaigns retrieved succesfully',
+      data: currentCampaign
+    });
+});
+
+const httpGetCampaignById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    throw new FormError('Campaign Id required');
+  }
+  const campaignById = await getCampaignById(id);
+  console.log(campaignById);
+  return res
+    .status(200)
+    .json({ message: 'Campaign retrieved succesfully', data: campaignById });
 });
 
 const httpCreateCampaign = asyncHandler(async (req, res) => {
   const { userId } = req;
-  const { name, description, campaignLink, paystackPaymentLink } = req.body;
-  if (!(name, description, campaignLink)) {
-    throw new FormError("Some details are missing in the form");
+  const { name, description, campaignLink, paymentLink } = req.body;
+  if (!(name, description, campaignLink, paymentLink)) {
+    throw new FormError('Some details are missing in the Create Campaign form');
   }
   const newCampaign = await createCampaign(
     userId,
     name,
     description,
     campaignLink,
-    paystackPaymentLink
+    paymentLink
   );
-  return res.status(200).json(newCampaign);
+  return res
+    .status(200)
+    .json({ message: 'Campaign Created Succesfully', newCampaign });
 });
 
 const httpDeleteCampaign = asyncHandler(async (req, res) => {
-  const { userId } = req;
-  if (!userId) {
-    throw new NotFoundError("Your token has expired. Please login again");
+  const { id } = req.params;
+  if (!id) {
+    throw new FormError('Campaign Id required');
   }
-  const deletedCampaign = await deleteCampaign(userId);
-  console.log(deletedCampaign)
-  return res.status(200).json({ message: "Campaign Deleted Successfully", deletedCampaign });
+  const deletedCampaign = await deleteCampaign(id);
+  console.log(deletedCampaign);
+  return res.status(200).json({
+    message: 'Campaign Deleted Successfully',
+    data: deletedCampaign
+  });
 });
 
-module.exports = {
+export {
   httpGetCampaign,
+  httpGetCampaignById,
   httpCreateCampaign,
-  httpDeleteCampaign,
+  httpDeleteCampaign
 };
 
 // CREATE TABLE campaigns (

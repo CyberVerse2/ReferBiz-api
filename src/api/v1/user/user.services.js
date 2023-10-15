@@ -1,41 +1,42 @@
-const { query } = require("../globals/configs/db.config");
-const {
-  checkDatabaseError,
-  AppError,
-} = require("../globals/utils/errors.util");
-const { encryptData } = require("../globals/utils/encryptData.utils");
+import { query } from '../globals/configs/db.config.js';
+import { checkDatabaseError, AppError } from '../globals/utils/errors.util.js';
 
 async function getUser(id) {
   if (!id) {
-    throw new AppError("Provide an Id");
+    throw new AppError('Provide an Id');
   }
   const currentUser = await query(
-    "SELECT * FROM campaign_owners WHERE owner_id=$1",
+    'SELECT * FROM campaign_owners WHERE owner_id=$1',
     [id]
   );
   checkDatabaseError();
   return currentUser;
 }
 
-async function updateUser(id, username, paystackSecretKey, whatsappLink) {
+async function updateUser(
+  id,
+  username,
+  email,
+  socialLink,
+  accountNumber,
+  businessName
+) {
   if (!id) {
-    throw new AppError("Provide an Id");
+    throw new AppError('Provide an Id');
   }
-  let newPaystackSecretKey =
-    paystackSecretKey !== null
-      ? await encryptData(paystackSecretKey)
-      : paystackSecretKey.slice();
-  console.log(newPaystackSecretKey);
   const updatedUser = await query(
     `
       UPDATE campaign_owners
       SET
         owner_name = COALESCE($1, owner_name),
-        whatsapp_link = COALESCE($2, whatsapp_link),
-        paystack_secret_key = COALESCE($3, paystack_secret_key)
-      WHERE owner_id = $4 RETURNING *;
+        organization_email = COALESCE($2, organization_email),
+        social_link = COALESCE($3, social_link),
+        account_number = COALESCE($4, account_number),
+        business_name = COALESCE($5, business_name)
+
+      WHERE owner_id = $6 RETURNING *;
     `,
-    [username, whatsappLink, newPaystackSecretKey, id]
+    [username, email, socialLink, accountNumber, businessName, id]
   );
   checkDatabaseError();
   return updatedUser;
@@ -43,18 +44,18 @@ async function updateUser(id, username, paystackSecretKey, whatsappLink) {
 
 async function deleteUser(id) {
   if (!id) {
-    throw new AppError("Provide an Id");
+    throw new AppError('Provide an Id');
   }
   const deletedUser = await query(
-    "DELETE FROM campaign_owners WHERE owner_id=$1",
+    'DELETE FROM campaign_owners WHERE owner_id=$1',
     [id]
   );
   checkDatabaseError();
   return deletedUser;
 }
 
-module.exports = {
+export {
   getUser,
   updateUser,
-  deleteUser,
+  deleteUser
 };
