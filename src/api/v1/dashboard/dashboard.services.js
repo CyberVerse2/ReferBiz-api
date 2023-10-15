@@ -14,8 +14,8 @@ async function getDashboard(userId) {
   if (!userId) throw new AppError('Provide an Id');
   const referralsCount = (await getReferred()).length;
   const linksCount = (await getReferrers()).length;
-  const amount = await getCampaigns(userId);
-  const referrerAmount = amount.referrer_amount;
+  const amount = await getCampaigns(userId) && 0;
+  const referrerAmount = amount.referrer_amount && 0;
   const amountPaid = referrerAmount * referralsCount;
   const sortedReferred = await (
     await query('SELECT * FROM referred ORDER BY date DESC')
