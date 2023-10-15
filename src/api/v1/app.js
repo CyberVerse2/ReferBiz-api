@@ -28,9 +28,9 @@ app.post(
       .createHmac('sha512', process.env.WEBHOOK_SECRET_KEY)
       .update(JSON.stringify(req.body))
       .digest('hex');
-    console.log(req.headers['x-paystack-signature']);
-    if (hash != req.headers['x-paystack-signature'])
-      throw new AuthenticationError('The paystack hash is invalid');
+    console.log(req.headers['X-Bloc-Webhook']);
+    if (hash != req.headers['X-Bloc-Webhook'])
+      throw new AuthenticationError('The bloc hash is invalid');
     const event = req.body;
     return res
       .status(200)

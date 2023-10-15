@@ -70,7 +70,7 @@ async function deleteCampaign(id) {
     [id]
   );
   checkDatabaseError();
-  if (!deletedCampaign) throw new NotFoundError('Campaign doesnt exist');
+  if (!deletedCampaign) throw new NotFoundError(`Campaign doesn't exist`);
   return deletedCampaign;
 }
 
