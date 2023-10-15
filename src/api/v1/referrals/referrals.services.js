@@ -9,7 +9,7 @@ import {
   NotFoundError,
   AppError
 } from '../globals/utils/errors.util.js';
-import { getCheckoutLink } from './referrals.js';
+import { getCheckoutLink } from './referrals.services';
 
 async function getReferrers(campaignId) {
   const referrers = await query('SELECT * FROM referrer where campaign_id=$1', [
@@ -65,18 +65,28 @@ async function getReferredById(id) {
   return referred;
 }
 
-async function updateReferralCount(referralCode) {
+async function getReferredByEmail(email) {
+  const referred = await query(
+    'SELECT * FROM referred where referred_email=$1',
+    [email]
+  );
+  checkDatabaseError();
+  console.log(referred);
+  return referred;
+}
+
+async function updateReferralCount(email) {
   const { referral_count: referralCount } = await query(
-    `SELECT referral_count FROM referrer WHERE referral_code = $1 `,
-    [referralCode]
+    `SELECT referral_count FROM referrer WHERE email=$1 `,
+    [email]
   );
   checkDatabaseError();
   console.log(referralCount);
   const updateReferred = await query(
     `
-      UPDATE referrer SET referral_count=$1,rewards_earned=$2 WHERE referral_code=$3 RETURNING *;
+      UPDATE referrer SET referral_count=$1,rewards_earned=$2 WHERE email=$3 RETURNING *;
     `,
-    [referralCount + 1, referralCount + 1, referralCode]
+    [referralCount + 1, referralCount + 1, email]
   );
   checkDatabaseError();
   return updateReferred;
@@ -104,7 +114,7 @@ async function createNewReferred(
     customer_email: email,
     customer_name: username,
     country: 'Nigeria',
-    amount: amount,
+    amount: amount
     // referredId,
     // referralCode
   };
@@ -112,8 +122,21 @@ async function createNewReferred(
   console.log(newReferred);
   return newReferred;
 }
-async function validateReferral(email) {
-  
+async function validateReferral(data) {
+  if (data.event === 'transaction.new' && data.data.status === 'successful') {
+    const referredEmail = data.data.customer_detail.email;
+    const referred = getReferredByEmail(referredEmail);
+    if (referred.verified == false) {
+      const newReferred = await query(
+        `
+      UPDATE referred SET verified=$1 WHERE email=$2 RETURNING *;
+    `,
+        [true, referredEmail]
+      );
+    }
+    const newReferrer = updateReferralCount(referredEmail);
+    return { newReferrer, referred };
+  }
 }
 export {
   getReferrers,
@@ -121,6 +144,6 @@ export {
   getReferred,
   getReferredById,
   createNewReferrer,
-  createNewReferred
+  createNewReferred,
+  validateReferral
 };
-  

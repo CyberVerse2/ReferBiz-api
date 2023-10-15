@@ -11,6 +11,7 @@ import api from './api.js';
 import asyncHandler from 'express-async-handler';
 import { AuthenticationError } from './globals/utils/errors.util.js';
 import { config } from 'dotenv';
+import { validateReferral } from './referrals/referrals.services.js';
 config();
 const app = express();
 
@@ -23,7 +24,7 @@ app.use(errorHandler);
 
 app.post(
   '/webhooks',
-  asyncHandler((req, res) => {
+  asyncHandler(async (req, res) => {
     const hash = crypto
       .createHmac('sha512', process.env.WEBHOOK_SECRET_KEY)
       .update(JSON.stringify(req.body))
@@ -31,10 +32,11 @@ app.post(
     console.log(req.headers['X-Bloc-Webhook']);
     if (hash != req.headers['X-Bloc-Webhook'])
       throw new AuthenticationError('The bloc hash is invalid');
-    const event = req.body;
+    const data = req.body;
+    const result = await validateReferral(data);
     return res
       .status(200)
-      .json({ message: 'Webhook retrieval successful', data: event });
+      .json({ message: 'Webhook retrieval successful', data: data, result });
   })
 );
 
