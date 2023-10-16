@@ -114,13 +114,11 @@ async function createNewReferred(
     customer_email: email,
     customer_name: username,
     country: 'Nigeria',
-    amount: amount
-    // referredId,
-    // referralCode
+    amount: parseInt(amount)
   };
-  getCheckoutLink(body);
+  const checkoutLink = await getCheckoutLink(body);
   console.log(newReferred);
-  return newReferred;
+  return { newReferred, checkoutLink };
 }
 async function validateReferral(data) {
   if (data.event === 'transaction.new' && data.data.status === 'successful') {

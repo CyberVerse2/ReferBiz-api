@@ -35,6 +35,7 @@ app.post(
       throw new AuthenticationError('The bloc hash is invalid');
     const data = req.body;
     const result = await validateReferral(data);
+    console.log(data, result)
     return res
       .status(200)
       .json({ message: 'Webhook retrieval successful', data: data, result });

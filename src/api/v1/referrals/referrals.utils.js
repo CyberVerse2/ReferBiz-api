@@ -7,14 +7,17 @@ import { AppError } from '../globals/utils/errors.util.js';
 config();
 
 async function getCheckoutLink(body) {
-  const data = JSON.stringify(body);
-  console.log(process.env.BLOC_PUBLIC_KEY);
-  console.log(body);
+  const newBody = {
+    ...body,
+    customer_email: `${body.customer_email.split('@')[0]}@orchs.xyz`
+  };
+  const data = JSON.stringify(newBody);
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
     url: 'https://api.blochq.io/v1/checkout/new',
     headers: {
+      Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: `Bearer ${process.env.BLOC_PUBLIC_KEY}`
     },
@@ -22,7 +25,7 @@ async function getCheckoutLink(body) {
   };
 
   try {
-    const response = await axios.request(config);
+    const response = await axios(config);
     console.log(response);
     const checkoutLink = response.data?.data;
     if (!checkoutLink) throw new AppError('Failed to create checkout link');
