@@ -29,7 +29,8 @@ app.post(
       .createHmac('sha512', process.env.WEBHOOK_SECRET_KEY)
       .update(JSON.stringify(req.body))
       .digest('hex');
-    console.log(req.headers['x-bloc-webhook']);
+    
+    console.log(req.headers['x-bloc-webhook'], hash);
     if (hash != req.headers['x-bloc-webhook'])
       throw new AuthenticationError('The bloc hash is invalid');
     const data = req.body;
