@@ -9,7 +9,7 @@ import {
   NotFoundError,
   AppError
 } from '../globals/utils/errors.util.js';
-import { getCheckoutLink } from './referrals.services';
+import { getCheckoutLink } from './referrals.utils.js';
 
 async function getReferrers(campaignId) {
   const referrers = await query('SELECT * FROM referrer where campaign_id=$1', [

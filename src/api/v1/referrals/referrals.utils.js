@@ -9,7 +9,7 @@ config();
 async function getCheckoutLink(body) {
   const data = JSON.stringify(body);
   console.log(process.env.BLOC_PUBLIC_KEY);
-  console.log(body)
+  console.log(body);
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
@@ -18,12 +18,12 @@ async function getCheckoutLink(body) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${process.env.BLOC_PUBLIC_KEY}`
     },
-    data:data
+    data: data
   };
 
   try {
     const response = await axios.request(config);
-    console.log(response)
+    console.log(response);
     const checkoutLink = response.data?.data;
     if (!checkoutLink) throw new AppError('Failed to create checkout link');
     return checkoutLink;
@@ -32,5 +32,4 @@ async function getCheckoutLink(body) {
   }
 }
 
-
-export {getCheckoutLink };
+export { getCheckoutLink };
