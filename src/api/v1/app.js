@@ -26,7 +26,7 @@ app.post(
   '/webhooks',
   asyncHandler(async (req, res) => {
     const hash = crypto
-      .createHmac('sha512', process.env.WEBHOOK_SECRET_KEY)
+      .createHmac('sha256', process.env.WEBHOOK_SECRET_KEY)
       .update(JSON.stringify(req.body))
       .digest('hex');
     
