@@ -28,6 +28,7 @@ async function getCheckoutLink(body) {
     const response = await axios(config);
     console.log(response);
     const checkoutLink = response.data?.data;
+    console.log(checkoutLink)
     if (!checkoutLink) throw new AppError('Failed to create checkout link');
     return checkoutLink;
   } catch (error) {
